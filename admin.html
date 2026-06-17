@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Panel</title>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+
+body{
+background:#f5f7ff;
+}
+
+
+/* LOGIN */
+
+#loginScreen{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:linear-gradient(135deg,#0052D4,#4364F7,#6FB1FC);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+z-index:9999;
+
+}
+
+
+
+.login-card{
+
+width:90%;
+max-width:380px;
+
+background:rgba(255,255,255,.15);
+
+backdrop-filter:blur(20px);
+
+padding:30px;
+
+border-radius:25px;
+
+text-align:center;
+
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+
+color:#fff;
+
+}
+
+
+
+.login-icon{
+
+font-size:60px;
+
+margin-bottom:15px;
+
+}
+
+
+
+.login-card h2{
+
+margin-bottom:10px;
+
+}
+
+
+
+.login-card p{
+
+margin-bottom:20px;
+
+opacity:.8;
+
+}
+
+
+
+.login-card input{
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:12px;
+
+border:none;
+
+border-radius:12px;
+
+outline:none;
+
+}
+
+
+
+.login-card button{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:12px;
+
+background:white;
+
+color:#0d6efd;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+background:#0d6efd;
+
+color:#fff;
+
+padding:15px 20px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.logout{
+
+background:#fff;
+
+color:#0d6efd;
+
+border:none;
+
+padding:8px 15px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+
+/* CONTAINER */
+
+.container{
+
+padding:20px;
+
+}
+
+
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:15px;
+
+margin-bottom:20px;
+
+}
+
+
+
+.card{
+
+background:#fff;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+text-align:center;
+
+}
+
+
+
+.card h3{
+
+font-size:14px;
+
+color:#666;
+
+margin-bottom:10px;
+
+}
+
+
+
+.card p{
+
+font-size:24px;
+
+font-weight:bold;
+
+color:#0d6efd;
+
+}
+
+
+
+.status-select{
+
+width:100%;
+
+padding:10px;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+}
+
+
+/* SEARCH */
+
+.search{
+
+margin-bottom:20px;
+
+}
+
+
+.search input{
+
+width:100%;
+
+padding:12px;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+outline:none;
+
+}
+
+
+
+/* TABLE */
+
+.table-box{
+
+background:white;
+
+border-radius:15px;
+
+padding:15px;
+
+overflow-x:auto;
+
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+
+
+th,td{
+
+padding:12px;
+
+border-bottom:1px solid #eee;
+
+text-align:left;
+
+}
+
+
+
+th{
+
+background:#f7f7f7;
+
+}
+
+
+
+.action{
+
+display:flex;
+
+gap:5px;
+
+}
+
+
+
+.btn{
+
+border:none;
+
+padding:7px 12px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+
+
+.view{
+
+background:#0d6efd;
+
+color:white;
+
+}
+
+
+
+.delete{
+
+background:#dc3545;
+
+color:white;
+
+}
+
+
+
+.empty{
+
+text-align:center;
+
+padding:20px;
+
+color:#777;
+
+}
+
+
+
+@media(max-width:768px){
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="loginScreen">
+
+
+<div class="login-card">
+
+
+<div class="login-icon">
+
+<i class="fa-solid fa-user-shield"></i>
+
+</div>
+
+
+<h2>Admin Login</h2>
+
+
+<p>Authorized Access Only</p>
+
+
+<input 
+type="email"
+id="adminEmail"
+placeholder="Admin Email">
+
+
+
+<input
+type="password"
+id="adminPassword"
+placeholder="Password">
+
+
+
+<button onclick="adminLogin()">
+
+Login
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<div class="header">
+
+
+<h2>
+
+<i class="fa-solid fa-user-shield"></i>
+
+Admin Dashboard
+
+</h2>
+
+
+<button class="logout" onclick="logout()">
+
+Logout
+
+</button>
+
+
+</div>
+
+
+
+<div class="container">
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h3>Total Quantity</h3>
+
+<p id="totalBookings">0</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>Today's Quantity</h3>
+
+<p id="todayBookings">0</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>Booking Status</h3>
+
+
+<select 
+id="bookingStatus"
+class="status-select"
+onchange="changeStatus()">
+
+
+
+<option value="open">
+
+Open
+
+</option>
+
+
+
+<option value="closed">
+
+Closed
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="search">
+
+
+<input
+type="text"
+id="search"
+placeholder="Search Booking...">
+
+
+</div>
+
+
+
+<div class="table-box">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Number</th>
+
+<th>Date</th>
+
+<th>Qty</th>
+
+<th>Action</th>
+
+
+</tr>
+
+</thead>
+
+
+<tbody id="bookingTable">
+
+
+<tr id="emptyRow">
+
+
+<td colspan="5" class="empty">
+
+No Bookings Available
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+
+import {
+
+getAuth,
+
+signInWithEmailAndPassword,
+
+onAuthStateChanged,
+
+signOut
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+
+
+import {
+
+getFirestore,
+
+collection,
+
+onSnapshot,
+
+deleteDoc,
+
+doc,
+
+setDoc
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
+
+
+const firebaseConfig = {
+
+
+apiKey: "AIzaSyADifV9NEMzO-8O1j4mnP-4hBrChx4T1a0",
+
+
+authDomain: "slot-book-44528.firebaseapp.com",
+
+
+projectId: "slot-book-44528",
+
+
+storageBucket: "slot-book-44528.appspot.com",
+
+
+messagingSenderId: "192574820430",
+
+
+appId: "1:192574820430:web:edce52f6d5aff8ea5b731f"
+
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+
+const auth = getAuth(app);
+
+
+
+const db = getFirestore(app);
+
+
+
+
+
+/* =====================
+   LOGIN
+===================== */
+
+
+window.adminLogin=function(){
+
+
+
+let email =
+document.getElementById("adminEmail").value.trim();
+
+
+
+let password =
+document.getElementById("adminPassword").value.trim();
+
+
+
+
+signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+password
+
+)
+
+.then(()=>{
+
+
+document.getElementById(
+"loginScreen"
+).style.display="none";
+
+
+})
+
+
+.catch(error=>{
+
+
+alert(
+"Login Failed : "
++ error.message
+);
+
+
+});
+
+
+};
+
+
+
+
+
+/* =====================
+   AUTH CHECK
+===================== */
+
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+
+document.getElementById(
+"loginScreen"
+).style.display="none";
+
+
+loadBookings();
+
+
+}
+
+else{
+
+
+document.getElementById(
+"loginScreen"
+).style.display="flex";
+
+
+}
+
+
+
+});
+
+
+
+
+
+/* =====================
+   LOGOUT
+===================== */
+
+
+window.logout=function(){
+
+
+signOut(auth)
+
+.then(()=>{
+
+
+location.reload();
+
+
+});
+
+
+};
+
+
+
+
+
+/* =====================
+   FIRESTORE LOAD
+===================== */
+
+
+function loadBookings(){
+
+
+
+const table =
+document.getElementById(
+"bookingTable"
+);
+
+
+
+
+onSnapshot(
+
+collection(db,"bookings"),
+
+(snapshot)=>{
+
+
+
+table.innerHTML="";
+
+
+
+let totalQty = 0;
+
+let todayQty = 0;
+
+
+
+let today = new Date()
+.toISOString()
+.split("T")[0];
+
+
+
+
+
+if(snapshot.empty){
+
+
+table.innerHTML=`
+
+<tr>
+
+<td colspan="5" class="empty">
+
+No Bookings Available
+
+</td>
+
+</tr>
+
+
+`;
+
+
+
+}
+
+
+
+snapshot.forEach((item)=>{
+
+
+let data=item.data();
+
+
+
+
+let qty =
+Number(
+data.qty || data.quantity || 0
+);
+
+
+
+
+totalQty += qty;
+
+
+
+if(data.date===today){
+
+
+todayQty += qty;
+
+
+}
+
+
+
+
+
+let row=document.createElement("tr");
+
+
+
+row.innerHTML=`
+
+
+<td>${data.name || ""}</td>
+
+
+<td>${data.number || ""}</td>
+
+
+<td>${data.date || ""}</td>
+
+
+<td>${qty}</td>
+
+
+<td>
+
+
+<div class="action">
+
+
+<button 
+class="btn view"
+
+onclick="viewBooking(
+'${data.name}',
+'${data.number}',
+'${data.date}',
+'${qty}'
+)">
+
+View
+
+</button>
+
+
+
+<button 
+class="btn delete"
+
+onclick="deleteBooking('${item.id}')">
+
+Delete
+
+</button>
+
+
+
+</div>
+
+
+</td>
+
+
+`;
+
+
+
+table.appendChild(row);
+
+
+
+});
+
+
+
+
+
+document.getElementById(
+"totalBookings"
+).innerText=totalQty;
+
+
+
+document.getElementById(
+"todayBookings"
+).innerText=todayQty;
+
+
+
+
+},
+
+(error)=>{
+
+
+console.error(
+"Firestore Error:",
+error
+);
+
+
+alert(
+"Firestore Connection Error"
+);
+
+
+
+}
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+/* =====================
+VIEW
+===================== */
+
+
+window.viewBooking=function(
+name,
+number,
+date,
+qty
+){
+
+
+
+alert(
+
+"Name : "+name+
+
+"\n\nNumber : "+number+
+
+"\n\nDate : "+date+
+
+"\n\nQuantity : "+qty
+
+);
+
+
+};
+
+
+
+
+
+
+
+/* =====================
+DELETE
+===================== */
+
+
+window.deleteBooking=function(id){
+
+
+
+if(confirm(
+"Delete this booking?"
+)){
+
+
+deleteDoc(
+
+doc(
+db,
+"bookings",
+id
+
+)
+
+);
+
+
+}
+
+
+
+};
+
+
+
+
+
+
+
+/* =====================
+STATUS
+===================== */
+
+
+window.changeStatus=function(){
+
+
+
+let status =
+document.getElementById(
+"bookingStatus"
+).value;
+
+
+
+
+setDoc(
+
+doc(
+db,
+"settings",
+"booking"
+),
+
+{
+
+status:status
+
+}
+
+);
+
+
+
+alert(
+"Status Updated : "
++status.toUpperCase()
+);
+
+
+
+};
+
+
+
+
+
+
+
+
+/* =====================
+SEARCH
+===================== */
+
+
+document
+
+.getElementById("search")
+
+.addEventListener(
+
+"keyup",
+
+function(){
+
+
+
+let value =
+this.value.toLowerCase();
+
+
+
+document
+
+.querySelectorAll(
+"#bookingTable tr"
+)
+
+.forEach(row=>{
+
+
+row.style.display =
+
+row.innerText
+.toLowerCase()
+.includes(value)
+
+?
+
+""
+
+:
+
+"none";
+
+
+
+});
+
+
+
+}
+
+
+
+);
+
+
+
+</script>
+
+
+</body>
+
+</html>

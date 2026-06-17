@@ -1,0 +1,445 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slot Booking</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background:linear-gradient(135deg,#0052D4,#4364F7,#6FB1FC);
+}
+
+.card{
+width:100%;
+max-width:420px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(20px);
+border-radius:24px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+color:#fff;
+}
+
+.logo{
+text-align:center;
+margin-bottom:20px;
+cursor:pointer;
+}
+
+.logo i{
+font-size:50px;
+margin-bottom:10px;
+}
+
+.logo h2{
+font-size:28px;
+font-weight:700;
+}
+
+.input-group{
+margin-bottom:15px;
+}
+
+.label{
+font-size:14px;
+margin-bottom:6px;
+display:block;
+}
+
+.input-box{
+display:flex;
+align-items:center;
+background:#fff;
+border-radius:14px;
+padding:12px;
+}
+
+.input-box i{
+color:#0d6efd;
+font-size:18px;
+margin-right:10px;
+}
+
+.input-box input{
+border:none;
+outline:none;
+width:100%;
+font-size:15px;
+}
+
+.qty-box{
+display:flex;
+align-items:center;
+justify-content:center;
+background:#fff;
+border-radius:14px;
+padding:10px;
+}
+
+.qty-btn{
+width:40px;
+height:40px;
+border:none;
+border-radius:10px;
+background:#0d6efd;
+color:#fff;
+font-size:20px;
+cursor:pointer;
+}
+
+#quantity{
+width:60px;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#000;
+}
+
+.submit-btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#0d6efd;
+color:#fff;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+}
+
+.success{
+display:none;
+margin-top:15px;
+background:#28a745;
+padding:12px;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+.closed-card{
+width:100%;
+text-align:center;
+padding:30px 25px;
+border-radius:24px;
+background:rgba(255,255,255,.18);
+backdrop-filter:blur(25px);
+box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.closed-icon{
+width:90px;
+height:90px;
+margin:auto;
+margin-bottom:20px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(255,255,255,.2);
+font-size:42px;
+}
+
+.closed-badge{
+display:inline-block;
+padding:8px 16px;
+margin-bottom:15px;
+border-radius:30px;
+background:rgba(255,255,255,.15);
+font-size:12px;
+font-weight:700;
+}
+
+.closed-footer{
+margin-top:20px;
+padding:12px;
+border-radius:12px;
+background:rgba(255,255,255,.12);
+}
+
+</style></head><body><div class="card"><div class="logo">
+<i class="fa-solid fa-calendar-check"></i>
+<h2>Slot Booking</h2>
+</div><div id="bookingClosed" style="display:none;"><div class="closed-card"><div class="closed-icon">
+<i class="fa-solid fa-circle-check"></i>
+</div><div class="closed-badge">
+SLOTS FULL
+</div><h2>All Slots Reserved</h2><p>
+All available booking slots have been successfully reserved.
+<br><br>
+Please wait for the next slot opening announcement.
+</p><div class="closed-footer">
+<i class="fa-solid fa-clock"></i>
+New slots will be available soon
+</div></div></div><div id="bookingFormContainer"><form id="bookingForm"><div class="input-group">
+<label class="label">Name</label>
+<div class="input-box">
+<i class="fa-solid fa-user"></i>
+<input type="text" id="name" required>
+</div>
+</div><div class="input-group">
+<label class="label">Number</label>
+<div class="input-box">
+<i class="fa-solid fa-mobile-screen-button"></i>
+<input type="tel" id="number" required>
+</div>
+</div><div class="input-group">
+<label class="label">Telegram ID (Optional)</label>
+<div class="input-box">
+<i class="fa-brands fa-telegram"></i>
+<input type="text" id="telegram">
+</div>
+</div><div class="input-group">
+<label class="label">Quantity</label><div class="qty-box"><button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+
+<div id="quantity">1</div><button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+
+</div></div><div class="input-group">
+<label class="label">Date</label><div class="input-box">
+<i class="fa-solid fa-calendar-days"></i>
+<input type="date" id="date" required>
+</div></div><button type="submit" class="submit-btn">
+<i class="fa-solid fa-paper-plane"></i>
+Submit Booking
+</button><div class="success" id="successMsg">
+Booking Submitted Successfully ✅
+</div></form></div></div>
+
+<script type="module">
+
+import {
+  db,
+  collection,
+  addDoc,
+  doc,
+  onSnapshot
+} from "./firebase.js";
+
+/* =========================
+   QUANTITY
+========================= */
+
+let qty = 1;
+
+window.increaseQty = function(){
+
+qty++;
+
+document.getElementById(
+"quantity"
+).innerText = qty;
+
+}
+
+window.decreaseQty = function(){
+
+if(qty > 1){
+
+qty--;
+
+document.getElementById(
+"quantity"
+).innerText = qty;
+
+}
+
+}
+
+/* =========================
+   HIDDEN ADMIN ACCESS
+========================= */
+
+let adminTap = 0;
+
+document
+.querySelector(".logo")
+.addEventListener("click",()=>{
+
+adminTap++;
+
+if(adminTap >= 5){
+
+window.location.href =
+"admin.html";
+
+adminTap = 0;
+
+}
+
+});
+
+/* =========================
+   REALTIME BOOKING STATUS
+========================= */
+
+onSnapshot(
+
+doc(
+db,
+"settings",
+"booking"
+),
+
+(snapshot)=>{
+
+if(!snapshot.exists()) return;
+
+const data =
+snapshot.data();
+
+if(
+data.status === "closed"
+){
+
+document.getElementById(
+"bookingFormContainer"
+).style.display = "none";
+
+document.getElementById(
+"bookingClosed"
+).style.display = "block";
+
+}else{
+
+document.getElementById(
+"bookingFormContainer"
+).style.display = "block";
+
+document.getElementById(
+"bookingClosed"
+).style.display = "none";
+
+}
+
+}
+
+);
+
+/* =========================
+   FORM SUBMIT
+========================= */
+
+document
+.getElementById(
+"bookingForm"
+)
+.addEventListener(
+"submit",
+async function(e){
+
+e.preventDefault();
+
+const name =
+document.getElementById(
+"name"
+).value;
+
+const number =
+document.getElementById(
+"number"
+).value;
+
+const telegram =
+document.getElementById(
+"telegram"
+).value || "N/A";
+
+const date =
+document.getElementById(
+"date"
+).value;
+
+try{
+
+await addDoc(
+
+collection(
+db,
+"bookings"
+),
+
+{
+
+name:name,
+number:number,
+telegram:telegram,
+quantity:qty,
+date:date,
+createdAt:
+new Date()
+
+}
+
+);
+
+document.getElementById(
+"successMsg"
+).style.display =
+"block";
+
+const message =
+
+`📋 New Slot Booking
+
+👤 Name: ${name}
+
+📞 Number: ${number}
+
+✈ Telegram: ${telegram}
+
+📦 Quantity: ${qty}
+
+📅 Date: ${date}`;
+
+const adminNumber =
+"919999999999";
+
+/* CHANGE YOUR NUMBER */
+
+setTimeout(()=>{
+
+window.open(
+
+`https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`,
+
+"_blank"
+
+);
+
+},1000);
+
+this.reset();
+
+qty = 1;
+
+document.getElementById(
+"quantity"
+).innerText = "1";
+
+}
+catch(error){
+
+alert(
+"Booking Failed"
+);
+
+console.error(error);
+
+}
+
+});
+
+</script></body>
+</html>
